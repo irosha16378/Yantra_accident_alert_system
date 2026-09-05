@@ -6,6 +6,6 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Hello from ESP32");
+    Serial.println("Yantra Accident Alert System - ESP32");
     delay(1000);
 }
