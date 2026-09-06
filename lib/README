@@ -1,46 +1,59 @@
+# Yantra Accident Alert System
 
-This directory is intended for project specific (private) libraries.
-PlatformIO will compile them to static libraries and link into the executable file.
+## 📌 Overview
 
-The source code of each library should be placed in a separate directory
-("lib/your_library_name/[Code]").
+The Yantra Accident Alert System is an IoT-based accident detection and emergency alert system using an ESP32.
 
-For example, see the structure of the following example libraries `Foo` and `Bar`:
+The system is designed to detect possible accidents using motion sensors, determine the accident location using GPS, and send an emergency notification through a communication network.
 
-|--lib
-|  |
-|  |--Bar
-|  |  |--docs
-|  |  |--examples
-|  |  |--src
-|  |     |- Bar.c
-|  |     |- Bar.h
-|  |  |- library.json (optional. for custom build options, etc) https://docs.platformio.org/page/librarymanager/config.html
-|  |
-|  |--Foo
-|  |  |- Foo.c
-|  |  |- Foo.h
-|  |
-|  |- README --> THIS FILE
-|
-|- platformio.ini
-|--src
-   |- main.c
+## 🎯 Objectives
 
-Example contents of `src/main.c` using Foo and Bar:
-```
-#include <Foo.h>
-#include <Bar.h>
+- Detect possible vehicle accidents.
+- Reduce false accident detections.
+- Obtain the accident location.
+- Send an emergency alert.
+- Provide a reliable and low-cost accident detection system.
 
-int main (void)
-{
-  ...
-}
+## 🛠️ Technologies
 
-```
+- ESP32
+- PlatformIO
+- Arduino Framework
+- C/C++
+- Git
+- GitHub
 
-The PlatformIO Library Dependency Finder will find automatically dependent
-libraries by scanning project source files.
+## 🔧 Hardware
 
-More information about PlatformIO Library Dependency Finder
-- https://docs.platformio.org/page/librarymanager/ldf.html
+- ESP32
+- Accelerometer/Gyroscope
+- GPS module
+- Communication module
+- Emergency/cancel button
+
+## 🚧 Project Status
+
+Currently developing the ESP32-based prototype.
+
+### Completed
+
+- ESP32 setup
+- PlatformIO setup
+- Serial Monitor configuration
+- Git setup
+- GitHub repository setup
+
+### In Progress
+
+- Sensor integration
+- Accident detection algorithm
+- GPS integration
+- Emergency alert system
+
+## 🚀 Future Improvements
+
+- Improve accident detection accuracy.
+- Reduce false alarms.
+- Add real-time location tracking.
+- Improve emergency notification reliability.
+- Develop a complete IoT monitoring system.
