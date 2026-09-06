@@ -1,0 +1,5 @@
+# PC App Dependencies
+# Example:
+# PyQt6
+# pyserial
+# requests
