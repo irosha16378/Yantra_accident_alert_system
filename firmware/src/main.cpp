@@ -1,11 +1,13 @@
 #include <Arduino.h>
+#include "SystemController.h"
+
+// Instantiate System Controller instance using OOP Encapsulation
+static SystemController app;
 
 void setup() {
-    Serial.begin(115200);
-    Serial.println("ESP32 is working!");
+    app.begin();
 }
 
 void loop() {
-    Serial.println("Yantra Accident Alert System - ESP32");
-    delay(1000);
+    app.update();
 }
