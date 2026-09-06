@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏍️ YANTRA: Motorcycle Accident Alert System
+#  YANTRA Motorcycle Accident Alert System
 
 An intelligent IoT-based motorcycle accident detection and alert system featuring ESP32-S3 edge node processing, multi-sensor fusion (IMU + dual-handlebar hand detection), GPS positioning, 4G cellular transmission, and a real-time PyQt6 PC dashboard.
 
@@ -223,12 +223,12 @@ bool is_accident_suspected(float impact_g, bool hand_left, bool hand_right) {
 
 | Test Scenario | Impact Vibration | Left Hand | Right Hand | System Decision |
 | :--- | :---: | :---: | :---: | :--- |
-| **Normal Smooth Riding** | Low | ON | ON | 🟢 Normal Riding |
-| **Pothole Impact** | High | ON | ON | 🟢 Normal Riding (False Positive Prevented) |
-| **Rough Road / Cobblestone** | Medium-High | ON | ON | 🟢 Normal Riding |
-| **Sudden Braking** | Medium | ON | ON | 🟢 Normal Riding |
-| **One-Hand Riding Signal** | Low | OFF | ON | 🟢 Normal Riding |
-| **Controlled Fall / Accident** | High | OFF | OFF | 🚨 **ACCIDENT SUSPECTED** |
+| **Normal Smooth Riding** | Low | ON | ON |  Normal Riding |
+| **Pothole Impact** | High | ON | ON |  Normal Riding (False Positive Prevented) |
+| **Rough Road / Cobblestone** | Medium-High | ON | ON |  Normal Riding |
+| **Sudden Braking** | Medium | ON | ON |  Normal Riding |
+| **One-Hand Riding Signal** | Low | OFF | ON |  Normal Riding |
+| **Controlled Fall / Accident** | High | OFF | OFF |  **ACCIDENT SUSPECTED** |
 
 ---
 
@@ -249,7 +249,7 @@ This information is formatted into an emergency payload and displayed on the PC 
                  DIGITAL MAP
        ┌───────────────────────────┐
        │                           │
-       │            📍             │
+       │                         │
        │     ACCIDENT DETECTED     │
        │    6.927079, 79.861244    │
        │                           │
@@ -340,16 +340,16 @@ Accident Condition Met
 
 | Component | Status | Notes |
 | :--- | :---: | :--- |
-| **ESP32 Core Firmware Setup** | 🟢 Completed | Base project & UART/I2C drivers configured |
-| **PlatformIO Environment** | 🟢 Completed | Configured in `firmware/platformio.ini` |
-| **Directory Structure** | 🟢 Completed | Clean separation between `firmware/`, `pc_app/`, and `docs/` |
-| **IMU Motion Sensor Driver** | 🟡 Development | MPU6050 $I^2C$ sampling and filtering |
-| **Handlebar Hand Sensors** | 🟡 Development | Dual capacitive contact driver |
-| **Accident Fusion Algorithm** | 🟡 Development | Multi-condition impact + hand state evaluator |
-| **GPS Module Parser** | 🟡 Planned | NMEA parsing for Lat/Lon |
-| **4G Cellular Module** | 🟡 Planned | AT-command driver for SIM7600/EC25 |
-| **PyQt6 PC Dashboard** | 🟡 Planned | Live telemetry & interactive map view |
-| **Full Hardware Prototype** | 🔴 Planned | Final integrated enclosure & road testing |
+| **ESP32 Core Firmware Setup** |  Completed | Base project & UART/I2C drivers configured |
+| **PlatformIO Environment** |  Completed | Configured in `firmware/platformio.ini` |
+| **Directory Structure** |  Completed | Clean separation between `firmware/`, `pc_app/`, and `docs/` |
+| **IMU Motion Sensor Driver** |  Development | MPU6050 $I^2C$ sampling and filtering |
+| **Handlebar Hand Sensors** |  Development | Dual capacitive contact driver |
+| **Accident Fusion Algorithm** |  Development | Multi-condition impact + hand state evaluator |
+| **GPS Module Parser** |  Planned | NMEA parsing for Lat/Lon |
+| **4G Cellular Module** |  Planned | AT-command driver for SIM7600/EC25 |
+| **PyQt6 PC Dashboard** |  Planned | Live telemetry & interactive map view |
+| **Full Hardware Prototype** |  Planned | Final integrated enclosure & road testing |
 
 ### Development Roadmap
 
