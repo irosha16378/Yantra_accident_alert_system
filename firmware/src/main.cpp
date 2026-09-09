@@ -1,13 +1,10 @@
 #include <Arduino.h>
-#include "SystemController.h"
-
-// Instantiate System Controller instance using OOP Encapsulation
-static SystemController app;
 
 void setup() {
-    app.begin();
+    Serial.begin(115200);
+    Serial.println("System Initialized");
 }
 
 void loop() {
-    app.update();
+    // Put your main code here, to run repeatedly:
 }
