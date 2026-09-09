@@ -2,10 +2,9 @@
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("ESP32 is working!");
+    Serial.println("System Initialized");
 }
 
 void loop() {
-    Serial.println("Yantra Accident Alert System - ESP32");
-    delay(1000);
+    // Put your main code here, to run repeatedly:
 }
