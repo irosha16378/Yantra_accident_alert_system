@@ -343,7 +343,7 @@ Accident Condition Met
 | **ESP32 Core Firmware Setup** |  Completed | Base project & UART/I2C drivers configured |
 | **PlatformIO Environment** |  Completed | Configured in `firmware/platformio.ini` |
 | **Directory Structure** |  Completed | Clean separation between `firmware/`, `pc_app/`, and `docs/` |
-| **IMU Motion Sensor Driver** |  Development | MPU6050 $I^2C$ sampling and filtering |
+| **IMU Motion Sensor Driver** | Completed | MPU6050 I2C register driver with calibration, attitude math (Pitch/Roll), and EMA filter compiled & verified |
 | **Handlebar Hand Sensors** |  Development | Dual capacitive contact driver |
 | **Accident Fusion Algorithm** |  Development | Multi-condition impact + hand state evaluator |
 | **GPS Module Parser** |  Planned | NMEA parsing for Lat/Lon |
