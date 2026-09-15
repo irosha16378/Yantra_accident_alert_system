@@ -18,6 +18,8 @@ private:
     uint32_t _baudRate;
     bool _initialized;
 
+    void clearBuffer();
+
 public:
     explicit CellularManager(HardwareSerial& serial = Serial1);
 
@@ -38,6 +40,21 @@ public:
      * @brief Hard reset the modem module
      */
     void reset();
+
+    /**
+     * @brief Send raw AT command and wait for expected substring response
+     */
+    bool sendATCommand(const String& cmd, const char* expectedReply = "OK", uint32_t timeoutMs = 2000);
+
+    /**
+     * @brief Send raw AT command and capture the text output response
+     */
+    bool sendATCommandWithResponse(const String& cmd, String& response, uint32_t timeoutMs = 2000);
+
+    /**
+     * @brief Test basic AT communication with modem
+     */
+    bool checkModemResponse(uint32_t timeoutMs = 1000);
 
     bool isInitialized() const { return _initialized; }
 };
