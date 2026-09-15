@@ -16,7 +16,9 @@ private:
     int _txPin;
     int _pwrPin;
     uint32_t _baudRate;
+
     bool _initialized;
+    bool _registered;
 
     void clearBuffer();
 
@@ -61,7 +63,14 @@ public:
      */
     bool checkSIMReady();
 
+    /**
+     * @brief Check cellular network registration status (CREG / CGREG / CEREG)
+     */
+    bool checkNetworkRegistration();
+
+    // Getters
     bool isInitialized() const { return _initialized; }
+    bool isRegistered() const { return _registered; }
 };
 
 #endif // CELLULAR_MANAGER_H

@@ -6,7 +6,8 @@ CellularManager::CellularManager(HardwareSerial& serial)
       _txPin(Config::PIN_MODEM_TX),
       _pwrPin(Config::PIN_MODEM_PWR),
       _baudRate(Config::MODEM_BAUD),
-      _initialized(false) {}
+      _initialized(false),
+      _registered(false) {}
 
 bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate) {
     _rxPin = rxPin;
@@ -50,6 +51,12 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
     } else {
         Serial.println("[CellularManager] [WARNING] SIM Card not ready or PIN locked.");
     }
+
+    // Check network registration
+    _registered = checkNetworkRegistration();
+
+    Serial.print("[CellularManager] Network Registered: ");
+    Serial.println(_registered ? "YES" : "NO");
 
     _initialized = true;
     return true;
@@ -114,6 +121,22 @@ bool CellularManager::checkSIMReady() {
     String response;
     if (sendATCommandWithResponse("AT+CPIN?", response, 2000)) {
         return (response.indexOf("READY") != -1);
+    }
+    return false;
+}
+
+bool CellularManager::checkNetworkRegistration() {
+    String response;
+    // Check CREG (GSM) or CEREG (LTE/4G)
+    if (sendATCommandWithResponse("AT+CREG?", response, 2000)) {
+        if (response.indexOf(",1") != -1 || response.indexOf(",5") != -1) {
+            return true;
+        }
+    }
+    if (sendATCommandWithResponse("AT+CEREG?", response, 2000)) {
+        if (response.indexOf(",1") != -1 || response.indexOf(",5") != -1) {
+            return true;
+        }
     }
     return false;
 }
