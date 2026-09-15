@@ -13,6 +13,19 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
     _txPin = txPin;
     _pwrPin = pwrPin;
     _baudRate = baudRate;
+
+    // Configure modem power key pin
+    if (_pwrPin >= 0) {
+        pinMode(_pwrPin, OUTPUT);
+        digitalWrite(_pwrPin, LOW);
+    }
+
+    // Initialize UART port for modem
+    _serial.begin(_baudRate, SERIAL_8N1, _rxPin, _txPin);
+    delay(500);
+
+    Serial.println("[CellularManager] Hardware UART and GPIO pins initialized.");
+
     _initialized = true;
     return true;
 }
