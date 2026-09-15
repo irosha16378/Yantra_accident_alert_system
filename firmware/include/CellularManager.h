@@ -21,6 +21,7 @@ private:
     bool _registered;
     int _csq;                 // Signal quality (0-31, 99 = unknown)
     String _operatorName;     // Network operator name
+    uint32_t _lastUpdateMs;   // Timer for periodic status checks
 
     void clearBuffer();
 
@@ -44,6 +45,11 @@ public:
      * @brief Hard reset the modem module
      */
     void reset();
+
+    /**
+     * @brief Periodic update loop to refresh status and network registration
+     */
+    void update();
 
     /**
      * @brief Send raw AT command and wait for expected substring response

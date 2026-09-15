@@ -9,7 +9,8 @@ CellularManager::CellularManager(HardwareSerial& serial)
       _initialized(false),
       _registered(false),
       _csq(99),
-      _operatorName("Unknown") {}
+      _operatorName("Unknown"),
+      _lastUpdateMs(0) {}
 
 bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate) {
     _rxPin = rxPin;
@@ -67,6 +68,7 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
     Serial.println(_operatorName);
 
     _initialized = true;
+    _lastUpdateMs = millis();
     return true;
 }
 
@@ -179,4 +181,15 @@ String CellularManager::queryNetworkOperator() {
     }
     _operatorName = "Unknown";
     return _operatorName;
+}
+
+void CellularManager::update() {
+    if (!_initialized) return;
+
+    // Periodically update status every 30 seconds
+    if (millis() - _lastUpdateMs >= 30000) {
+        _lastUpdateMs = millis();
+        _registered = checkNetworkRegistration();
+        querySignalQuality();
+    }
 }
