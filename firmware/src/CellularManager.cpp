@@ -44,6 +44,13 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
     // Disable echo for cleaner parsing
     sendATCommand("ATE0");
 
+    // Check SIM ready status
+    if (checkSIMReady()) {
+        Serial.println("[CellularManager] SIM Card Ready.");
+    } else {
+        Serial.println("[CellularManager] [WARNING] SIM Card not ready or PIN locked.");
+    }
+
     _initialized = true;
     return true;
 }
@@ -101,4 +108,12 @@ bool CellularManager::sendATCommandWithResponse(const String& cmd, String& respo
 
 bool CellularManager::checkModemResponse(uint32_t timeoutMs) {
     return sendATCommand("AT", "OK", timeoutMs);
+}
+
+bool CellularManager::checkSIMReady() {
+    String response;
+    if (sendATCommandWithResponse("AT+CPIN?", response, 2000)) {
+        return (response.indexOf("READY") != -1);
+    }
+    return false;
 }

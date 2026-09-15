@@ -56,6 +56,11 @@ public:
      */
     bool checkModemResponse(uint32_t timeoutMs = 1000);
 
+    /**
+     * @brief Check if SIM card is inserted and ready (CPIN: READY)
+     */
+    bool checkSIMReady();
+
     bool isInitialized() const { return _initialized; }
 };
 
