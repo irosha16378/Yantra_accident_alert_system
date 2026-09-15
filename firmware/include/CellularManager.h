@@ -8,6 +8,9 @@
 /**
  * @file CellularManager.h
  * @brief 4G/LTE Cellular Communications Driver for Yantra Accident Alert System
+ * 
+ * Manages cellular modem UART communication (SIM7600/EC25/SIM800L), handling hardware power control,
+ * network registration, SMS emergency alerts, and HTTP payload transmission.
  */
 class CellularManager {
 private:
@@ -95,6 +98,11 @@ public:
      * @brief Send formatted accident alert SMS with GPS coordinates and impact metrics
      */
     bool sendAccidentAlert(const String& recipientPhone, float latitude, float longitude, float impactG, bool handsDetected = false);
+
+    /**
+     * @brief Send HTTP POST JSON alert packet over 4G data network
+     */
+    bool sendHTTPPOST(const String& url, const String& jsonPayload);
 
     // Getters
     bool isInitialized() const { return _initialized; }

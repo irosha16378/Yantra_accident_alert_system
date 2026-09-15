@@ -276,3 +276,29 @@ bool CellularManager::sendAccidentAlert(const String& recipientPhone, float lati
 
     return sendSMS(recipientPhone, msg);
 }
+
+bool CellularManager::sendHTTPPOST(const String& url, const String& jsonPayload) {
+    if (!_initialized) return false;
+
+    Serial.println("[CellularManager] Transmitting HTTP POST alert packet...");
+
+    // Setup HTTP parameters (SIM7600 / AT command standard HTTP stack)
+    sendATCommand("AT+HTTPINIT", "OK", 2000);
+    sendATCommand("AT+HTTPPARA=\"CID\",1", "OK", 2000);
+    sendATCommand("AT+HTTPPARA=\"URL\",\"" + url + "\"", "OK", 2000);
+    sendATCommand("AT+HTTPPARA=\"CONTENT\",\"application/json\"", "OK", 2000);
+
+    // Send HTTP data payload size
+    sendATCommand("AT+HTTPDATA=" + String(jsonPayload.length()) + ",10000", "DOWNLOAD", 3000);
+    _serial.print(jsonPayload);
+    delay(100);
+
+    // Perform POST action
+    String response;
+    bool sent = sendATCommandWithResponse("AT+HTTPACTION=1", response, 10000);
+    
+    // Terminate HTTP session
+    sendATCommand("AT+HTTPTERM", "OK", 2000);
+
+    return sent;
+}
