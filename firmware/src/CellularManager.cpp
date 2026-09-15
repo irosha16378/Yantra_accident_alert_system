@@ -7,7 +7,9 @@ CellularManager::CellularManager(HardwareSerial& serial)
       _pwrPin(Config::PIN_MODEM_PWR),
       _baudRate(Config::MODEM_BAUD),
       _initialized(false),
-      _registered(false) {}
+      _registered(false),
+      _csq(99),
+      _operatorName("Unknown") {}
 
 bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate) {
     _rxPin = rxPin;
@@ -54,9 +56,15 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
 
     // Check network registration
     _registered = checkNetworkRegistration();
+    _csq = querySignalQuality();
+    _operatorName = queryNetworkOperator();
 
     Serial.print("[CellularManager] Network Registered: ");
     Serial.println(_registered ? "YES" : "NO");
+    Serial.print("[CellularManager] Signal Quality (CSQ): ");
+    Serial.println(_csq);
+    Serial.print("[CellularManager] Network Operator: ");
+    Serial.println(_operatorName);
 
     _initialized = true;
     return true;
@@ -139,4 +147,36 @@ bool CellularManager::checkNetworkRegistration() {
         }
     }
     return false;
+}
+
+int CellularManager::querySignalQuality() {
+    String response;
+    if (sendATCommandWithResponse("AT+CSQ", response, 2000)) {
+        int csqIndex = response.indexOf("+CSQ: ");
+        if (csqIndex != -1) {
+            int commaIndex = response.indexOf(',', csqIndex);
+            if (commaIndex != -1) {
+                String valStr = response.substring(csqIndex + 6, commaIndex);
+                valStr.trim();
+                _csq = valStr.toInt();
+                return _csq;
+            }
+        }
+    }
+    _csq = 99;
+    return _csq;
+}
+
+String CellularManager::queryNetworkOperator() {
+    String response;
+    if (sendATCommandWithResponse("AT+COPS?", response, 2000)) {
+        int quoteStart = response.indexOf('"');
+        int quoteEnd = response.indexOf('"', quoteStart + 1);
+        if (quoteStart != -1 && quoteEnd != -1) {
+            _operatorName = response.substring(quoteStart + 1, quoteEnd);
+            return _operatorName;
+        }
+    }
+    _operatorName = "Unknown";
+    return _operatorName;
 }

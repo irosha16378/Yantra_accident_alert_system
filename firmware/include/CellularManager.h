@@ -19,6 +19,8 @@ private:
 
     bool _initialized;
     bool _registered;
+    int _csq;                 // Signal quality (0-31, 99 = unknown)
+    String _operatorName;     // Network operator name
 
     void clearBuffer();
 
@@ -68,9 +70,21 @@ public:
      */
     bool checkNetworkRegistration();
 
+    /**
+     * @brief Query signal quality (CSQ) value (0-31, 99=Unknown)
+     */
+    int querySignalQuality();
+
+    /**
+     * @brief Query active network operator name (COPS)
+     */
+    String queryNetworkOperator();
+
     // Getters
     bool isInitialized() const { return _initialized; }
     bool isRegistered() const { return _registered; }
+    int getSignalQuality() const { return _csq; }
+    const String& getOperatorName() const { return _operatorName; }
 };
 
 #endif // CELLULAR_MANAGER_H
