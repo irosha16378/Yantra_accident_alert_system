@@ -29,6 +29,16 @@ public:
                int pwrPin = Config::PIN_MODEM_PWR, 
                uint32_t baudRate = Config::MODEM_BAUD);
 
+    /**
+     * @brief Power on the modem using power key / reset GPIO pin sequence
+     */
+    void powerOn();
+
+    /**
+     * @brief Hard reset the modem module
+     */
+    void reset();
+
     bool isInitialized() const { return _initialized; }
 };
 

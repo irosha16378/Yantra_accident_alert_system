@@ -29,3 +29,23 @@ bool CellularManager::begin(int rxPin, int txPin, int pwrPin, uint32_t baudRate)
     _initialized = true;
     return true;
 }
+
+void CellularManager::powerOn() {
+    if (_pwrPin < 0) return;
+
+    Serial.println("[CellularManager] Powering on modem hardware...");
+    digitalWrite(_pwrPin, HIGH);
+    delay(1500); // 1.5 second power key pulse
+    digitalWrite(_pwrPin, LOW);
+    delay(3000); // Wait for modem boot sequence
+}
+
+void CellularManager::reset() {
+    if (_pwrPin < 0) return;
+
+    Serial.println("[CellularManager] Resetting modem hardware...");
+    digitalWrite(_pwrPin, HIGH);
+    delay(3000); // Extended pulse to reset
+    digitalWrite(_pwrPin, LOW);
+    delay(5000);
+}
