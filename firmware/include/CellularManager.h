@@ -86,6 +86,16 @@ public:
      */
     String queryNetworkOperator();
 
+    /**
+     * @brief Send an SMS emergency message to a specified phone number
+     */
+    bool sendSMS(const String& phoneNumber, const String& message);
+
+    /**
+     * @brief Send formatted accident alert SMS with GPS coordinates and impact metrics
+     */
+    bool sendAccidentAlert(const String& recipientPhone, float latitude, float longitude, float impactG, bool handsDetected = false);
+
     // Getters
     bool isInitialized() const { return _initialized; }
     bool isRegistered() const { return _registered; }

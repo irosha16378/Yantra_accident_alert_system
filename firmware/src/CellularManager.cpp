@@ -193,3 +193,86 @@ void CellularManager::update() {
         querySignalQuality();
     }
 }
+
+bool CellularManager::sendSMS(const String& phoneNumber, const String& message) {
+    if (!_initialized) {
+        Serial.println("[CellularManager] Cannot send SMS: Modem not initialized.");
+        return false;
+    }
+
+    Serial.print("[CellularManager] Sending SMS to ");
+    Serial.println(phoneNumber);
+
+    // Set text mode
+    if (!sendATCommand("AT+CMGF=1", "OK", 2000)) {
+        Serial.println("[CellularManager] Failed to set SMS text mode (AT+CMGF=1).");
+        return false;
+    }
+
+    clearBuffer();
+    _serial.print("AT+CMGS=\"");
+    _serial.print(phoneNumber);
+    _serial.println("\"");
+
+    // Wait for '>' prompt
+    uint32_t startMs = millis();
+    bool promptReceived = false;
+    while (millis() - startMs < 3000) {
+        if (_serial.available()) {
+            char c = (char)_serial.read();
+            if (c == '>') {
+                promptReceived = true;
+                break;
+            }
+        }
+        delay(10);
+    }
+
+    if (!promptReceived) {
+        Serial.println("[CellularManager] Failed to receive SMS prompt '>' from modem.");
+        sendATCommand(String((char)27)); // Send ESC to cancel
+        return false;
+    }
+
+    // Send message content followed by Ctrl+Z (0x1A)
+    _serial.print(message);
+    _serial.write(0x1A);
+
+    // Wait for send confirmation (+CMGS: or OK)
+    String response;
+    startMs = millis();
+    bool success = false;
+    while (millis() - startMs < 10000) {
+        while (_serial.available()) {
+            char c = (char)_serial.read();
+            response += c;
+        }
+        if (response.indexOf("+CMGS:") != -1 || response.indexOf("OK") != -1) {
+            success = true;
+            break;
+        }
+        if (response.indexOf("ERROR") != -1) {
+            break;
+        }
+        delay(20);
+    }
+
+    if (success) {
+        Serial.println("[CellularManager] [SUCCESS] Emergency SMS transmitted successfully!");
+    } else {
+        Serial.println("[CellularManager] [ERROR] Failed to send SMS.");
+    }
+    return success;
+}
+
+bool CellularManager::sendAccidentAlert(const String& recipientPhone, float latitude, float longitude, float impactG, bool handsDetected) {
+    String msg = "\u26A0\uFE0F [YANTRA ACCIDENT ALERT] \u26A0\uFE0F\n";
+    msg += "EMERGENCY: Motorcycle Accident Detected!\n";
+    msg += "Location: https://maps.google.com/?q=" + String(latitude, 6) + "," + String(longitude, 6) + "\n";
+    msg += "Lat: " + String(latitude, 6) + ", Lon: " + String(longitude, 6) + "\n";
+    msg += "Impact Force: " + String(impactG, 2) + " g\n";
+    msg += "Handlebar Hands On: " + String(handsDetected ? "YES" : "NO") + "\n";
+    msg += "Time: " + String(millis() / 1000) + "s post-boot";
+
+    return sendSMS(recipientPhone, msg);
+}
