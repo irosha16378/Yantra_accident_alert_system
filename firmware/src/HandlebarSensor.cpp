@@ -64,9 +64,57 @@ void HandlebarSensor::calibrate(uint16_t samples) {
 }
 
 void HandlebarSensor::readRawSensors() {
+    if (!_initialized) return;
+
+    #if defined(ESP32)
+        if (_useTouchApi) {
+            _data.rawLeft = touchRead(_pinLeft);
+            _data.rawRight = touchRead(_pinRight);
+        } else {
+            _data.rawLeft = (digitalRead(_pinLeft) == LOW) ? 10 : 80;
+            _data.rawRight = (digitalRead(_pinRight) == LOW) ? 10 : 80;
+        }
+    #else
+        _data.rawLeft = (digitalRead(_pinLeft) == LOW) ? 10 : 80;
+        _data.rawRight = (digitalRead(_pinRight) == LOW) ? 10 : 80;
+    #endif
 }
 
 void HandlebarSensor::applyFilter() {
+    if (!_initialized) return;
+
+    // Exponential Moving Average (EMA) smoothing
+    _data.filteredLeft  = (_filterAlpha * _data.rawLeft)  + ((1.0f - _filterAlpha) * _data.filteredLeft);
+    _data.filteredRight = (_filterAlpha * _data.rawRight) + ((1.0f - _filterAlpha) * _data.filteredRight);
+
+    // Dynamic threshold determination with capacitive touch polarity
+    bool currentRawLeft  = (_data.filteredLeft <= (float)_touchThreshold);
+    bool currentRawRight = (_data.filteredRight <= (float)_touchThreshold);
+
+    uint32_t now = millis();
+
+    // Debounce left touch signal
+    if (currentRawLeft != _rawLeftState) {
+        if (now - _lastDebounceTimeLeft >= _debounceMs) {
+            _rawLeftState = currentRawLeft;
+            _lastDebounceTimeLeft = now;
+        }
+    } else {
+        _lastDebounceTimeLeft = now;
+    }
+
+    // Debounce right touch signal
+    if (currentRawRight != _rawRightState) {
+        if (now - _lastDebounceTimeRight >= _debounceMs) {
+            _rawRightState = currentRawRight;
+            _lastDebounceTimeRight = now;
+        }
+    } else {
+        _lastDebounceTimeRight = now;
+    }
+
+    _data.leftTouched  = _rawLeftState;
+    _data.rightTouched = _rawRightState;
 }
 
 void HandlebarSensor::evaluateGripState() {
