@@ -22,7 +22,37 @@ bool HandlebarSensor::begin(uint8_t pinLeft, uint8_t pinRight, uint16_t threshol
     _pinLeft = pinLeft;
     _pinRight = pinRight;
     _touchThreshold = threshold;
+
+    Serial.println("[HANDLEBAR] Initializing Dual Handlebar Touch Sensors...");
+    Serial.printf("[HANDLEBAR] Configuration: Left GPIO%d | Right GPIO%d | Touch Threshold: %d\n",
+                  _pinLeft, _pinRight, _touchThreshold);
+
+    // Set pin modes for digital fallback
+    pinMode(_pinLeft, INPUT_PULLUP);
+    pinMode(_pinRight, INPUT_PULLUP);
+
+    // Initial sensor warm-up read
+    #if defined(ESP32)
+        _useTouchApi = true;
+        _data.rawLeft = touchRead(_pinLeft);
+        _data.rawRight = touchRead(_pinRight);
+    #else
+        _useTouchApi = false;
+        _data.rawLeft = digitalRead(_pinLeft) == LOW ? 0 : 100;
+        _data.rawRight = digitalRead(_pinRight) == LOW ? 0 : 100;
+    #endif
+
+    _data.filteredLeft = (float)_data.rawLeft;
+    _data.filteredRight = (float)_data.rawRight;
+    _data.state = GripState::NO_HANDS;
+    _data.touchDurationMs = 0;
+    _data.handsOffDurationMs = 0;
+    _lastStateChangeTime = millis();
+
     _initialized = true;
+    Serial.printf("[HANDLEBAR] Initial readings -> Left: %d | Right: %d\n", _data.rawLeft, _data.rawRight);
+    Serial.println("[SUCCESS] Handlebar sensor hardware initialized.");
+
     return true;
 }
 
