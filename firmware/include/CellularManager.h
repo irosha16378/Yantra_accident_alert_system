@@ -2,113 +2,11 @@
 #define CELLULAR_MANAGER_H
 
 #include <Arduino.h>
-#include <HardwareSerial.h>
-#include "Config.h"
 
-/**
- * @file CellularManager.h
- * @brief 4G/LTE Cellular Communications Driver for Yantra Accident Alert System
- * 
- * Manages cellular modem UART communication (SIM7600/EC25/SIM800L), handling hardware power control,
- * network registration, SMS emergency alerts, and HTTP payload transmission.
- */
 class CellularManager {
-private:
-    HardwareSerial& _serial;
-    int _rxPin;
-    int _txPin;
-    int _pwrPin;
-    uint32_t _baudRate;
-
-    bool _initialized;
-    bool _registered;
-    int _csq;                 // Signal quality (0-31, 99 = unknown)
-    String _operatorName;     // Network operator name
-    uint32_t _lastUpdateMs;   // Timer for periodic status checks
-
-    void clearBuffer();
-
 public:
-    explicit CellularManager(HardwareSerial& serial = Serial1);
-
-    /**
-     * @brief Initialize cellular hardware UART and modem pins
-     */
-    bool begin(int rxPin = Config::PIN_MODEM_RX, 
-               int txPin = Config::PIN_MODEM_TX, 
-               int pwrPin = Config::PIN_MODEM_PWR, 
-               uint32_t baudRate = Config::MODEM_BAUD);
-
-    /**
-     * @brief Power on the modem using power key / reset GPIO pin sequence
-     */
-    void powerOn();
-
-    /**
-     * @brief Hard reset the modem module
-     */
-    void reset();
-
-    /**
-     * @brief Periodic update loop to refresh status and network registration
-     */
-    void update();
-
-    /**
-     * @brief Send raw AT command and wait for expected substring response
-     */
-    bool sendATCommand(const String& cmd, const char* expectedReply = "OK", uint32_t timeoutMs = 2000);
-
-    /**
-     * @brief Send raw AT command and capture the text output response
-     */
-    bool sendATCommandWithResponse(const String& cmd, String& response, uint32_t timeoutMs = 2000);
-
-    /**
-     * @brief Test basic AT communication with modem
-     */
-    bool checkModemResponse(uint32_t timeoutMs = 1000);
-
-    /**
-     * @brief Check if SIM card is inserted and ready (CPIN: READY)
-     */
-    bool checkSIMReady();
-
-    /**
-     * @brief Check cellular network registration status (CREG / CGREG / CEREG)
-     */
-    bool checkNetworkRegistration();
-
-    /**
-     * @brief Query signal quality (CSQ) value (0-31, 99=Unknown)
-     */
-    int querySignalQuality();
-
-    /**
-     * @brief Query active network operator name (COPS)
-     */
-    String queryNetworkOperator();
-
-    /**
-     * @brief Send an SMS emergency message to a specified phone number
-     */
-    bool sendSMS(const String& phoneNumber, const String& message);
-
-    /**
-     * @brief Send formatted accident alert SMS with GPS coordinates and impact metrics
-     */
-    bool sendAccidentAlert(const String& recipientPhone, float latitude, float longitude, float impactG, bool handsDetected = false);
-
-    /**
-     * @brief Send HTTP POST JSON alert packet over 4G data network
-     */
-    bool sendHTTPPOST(const String& url, const String& jsonPayload);
-
-    // Getters
-    bool isInitialized() const { return _initialized; }
-    bool isRegistered() const { return _registered; }
-    int getSignalQuality() const { return _csq; }
-    const String& getOperatorName() const { return _operatorName; }
+    CellularManager();
+    void begin();
 };
 
-#endif // CELLULAR_MANAGER_H
+#endif

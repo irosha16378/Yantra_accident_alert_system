@@ -6,9 +6,6 @@
 class SystemController {
 public:
     SystemController();
-    void begin();
-    void update();
 };
 
-#endif // SYSTEM_CONTROLLER_H
-
+#endif
