@@ -2,36 +2,72 @@
 #include "Config.h"
 #include "IMUSensor.h"
 
-IMUSensor motionSensor;
+// Instantiate Gyroscope / IMU sensor driver object
+IMUSensor imu;
+
+unsigned long lastPrintTime = 0;
+const unsigned long PRINT_INTERVAL_MS = 200; // Print every 200ms (5Hz)
 
 void setup() {
+    // Initialize Serial Monitor for interactive output
     Serial.begin(Config::MONITOR_BAUD);
-    delay(1000);
-    Serial.println("==========================================");
-    Serial.println(" STEP 1: ESP32 + Motion Sensor (MPU6050)");
-    Serial.println("==========================================");
+    delay(1000); // Allow hardware serial connection to stabilize
 
-    if (motionSensor.begin()) {
-        Serial.println("[SUCCESS] Motion sensor initialized successfully!");
+    Serial.println();
+    Serial.println("==================================================");
+    Serial.println("   Yantra System - Step 1: MPU6050 Gyro Sensor Test");
+    Serial.println("==================================================");
+    Serial.printf("Connecting to MPU6050 on SDA=GPIO%d, SCL=GPIO%d...\n", 
+                  Config::PIN_SDA, Config::PIN_SCL);
+
+    // Initialize MPU6050 I2C connection
+    if (imu.begin(Config::PIN_SDA, Config::PIN_SCL, Config::MPU6050_I2C_ADDR)) {
+        Serial.println("[SUCCESS] MPU6050 Initialized!");
+        
+        // Calibrate static Gyroscope offsets (Keep sensor still during startup)
+        Serial.println("Keep sensor STILL on flat surface during calibration...");
+        imu.calibrate(100);
+        
+        Serial.println("Calibration complete! Live readings starting below:");
+        Serial.println("------------------------------------------------------------------");
+        Serial.println(" Gyro X | Gyro Y | Gyro Z | Pitch | Roll  | Total G | Status");
+        Serial.println(" (deg/s)| (deg/s)| (deg/s)| (deg) | (deg) |   (g)   | ");
+        Serial.println("------------------------------------------------------------------");
     } else {
-        Serial.println("[WARNING] Could not find MPU6050. Please check wiring (SDA=GPIO21, SCL=GPIO22, VCC=3.3V, GND=GND).");
+        Serial.println("[ERROR] Failed to find MPU6050! Check your SDA/SCL wiring & VCC (3.3V).");
     }
 }
 
 void loop() {
-    motionSensor.update();
+    // Update IMU measurements continuously
+    imu.update();
 
-    if (motionSensor.isInitialized()) {
-        Serial.print("Accel X: ");
-        Serial.print(motionSensor.getGX(), 2);
-        Serial.print(" g | Y: ");
-        Serial.print(motionSensor.getGY(), 2);
-        Serial.print(" g | Z: ");
-        Serial.print(motionSensor.getGZ(), 2);
-        Serial.print(" g | Total Magnitude: ");
-        Serial.print(motionSensor.getTotalGForce(), 2);
-        Serial.println(" g");
+    // Periodically print readings to Serial Monitor
+    if (millis() - lastPrintTime >= PRINT_INTERVAL_MS) {
+        lastPrintTime = millis();
+
+        if (imu.isInitialized()) {
+            const auto& data = imu.getData();
+
+            // Check triggers
+            bool impact = imu.isImpactDetected(Config::ACCIDENT_IMPACT_THRESHOLD_G);
+            bool tumble = imu.isTumbleDetected(Config::TUMBLE_ANGLE_THRESHOLD_DEG);
+
+            String statusStr = "NORMAL";
+            if (impact && tumble) {
+                statusStr = "IMPACT + TUMBLE!";
+            } else if (impact) {
+                statusStr = "IMPACT DETECTED!";
+            } else if (tumble) {
+                statusStr = "TUMBLE TILTED!";
+            }
+
+            Serial.printf(" %6.1f | %6.1f | %6.1f | %5.1f | %5.1f | %7.2f | %s\n",
+                          data.gyroX, data.gyroY, data.gyroZ,
+                          data.pitch, data.roll, data.totalG,
+                          statusStr.c_str());
+        } else {
+            Serial.println("[ERROR] MPU6050 sensor offline.");
+        }
     }
-
-    delay(500); // Read sample every 500ms
 }

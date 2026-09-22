@@ -9,5 +9,4 @@ public:
     void begin();
 };
 
-#endif // HANDLEBAR_SENSOR_H
-
+#endif

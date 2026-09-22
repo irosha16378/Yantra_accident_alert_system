@@ -1,7 +1,4 @@
 #include "HandlebarSensor.h"
 
 HandlebarSensor::HandlebarSensor() {}
-
-void HandlebarSensor::begin() {
-}
-
+void HandlebarSensor::begin() {}

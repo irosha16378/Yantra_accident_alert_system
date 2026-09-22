@@ -6,8 +6,7 @@
 class CellularManager {
 public:
     CellularManager();
-    bool begin();
+    void begin();
 };
 
-#endif // CELLULAR_MANAGER_H
-
+#endif

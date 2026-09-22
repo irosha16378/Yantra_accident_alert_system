@@ -6,9 +6,6 @@
 class FusionEngine {
 public:
     FusionEngine();
-    void begin();
-    void update();
 };
 
-#endif // FUSION_ENGINE_H
-
+#endif
