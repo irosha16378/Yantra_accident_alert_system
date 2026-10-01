@@ -1,18 +1,32 @@
 #include <Arduino.h>
+#include "Gyroscopesensor.h" // Include our custom sensor class
 
-// put function declarations here:
-int myFunction(int, int);
+// Create Gyroscope sensor object
+MotionDetector bikeSensor(2.5);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(115200);
+    Wire.begin();
+
+    Serial.println("Initializing System...");
+
+    // Initialize Gyroscope
+    if (!bikeSensor.initSensor()) {
+        Serial.println("Error: MPU6050 Sensor not found!");
+        while (1) {
+            delay(10);
+        }
+    }
+
+    Serial.println("System Ready!");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
+    // Check vibration from MotionDetector
+    if (bikeSensor.isVibrationDetected()) {
+        Serial.println("⚠️ ALERT: High Vibration / Impact Detected!");
+        delay(1000);
+    }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    delay(200);
 }
