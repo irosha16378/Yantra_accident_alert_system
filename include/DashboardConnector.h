@@ -19,8 +19,8 @@ private:
 public:
     // Constructor: Store Wi-Fi credentials and the Python Server URL
     DashboardConnector(const char* wifiSsid, const char* wifiPass, String url) {
-        ssid = wifiSsid;
-        password = wifiPass;
+        ssid = "Dialog 4G 815";
+        password = "bd7cAe60";
         serverUrl = url;
     }
 
