@@ -2,6 +2,7 @@
 #include "Gyroscopesensor.h" // Gyroscope & Accelerometer sensor class
 #include "GpsTracker.h"      // NEO-6M GPS module class
 #include "TouchSensor.h"     // Dual TTP223 Touch sensor class
+#include "DashboardConnector.h"    // web dashboard connector class
 
 // ==========================================
 // CREATE SENSOR OBJECTS
@@ -9,6 +10,8 @@
 MotionDetector bikeSensor(2.5);       // Vibration threshold set to 2.5
 GpsTracker bikeGps(16, 17, 9600);     // RX2 = GPIO 16, TX2 = GPIO 17, Baud = 9600
 HandleTouchDetector bikeHandle(4, 5); // Left Touch = GPIO 4, Right Touch = GPIO 5
+
+DashboardConnector webDash("Dialog 4G 815", "bd7cAe60", "http:// 192.168.56.1:5000/api/alert");
 
 void setup() {
     // Initialize Serial Monitor
@@ -18,6 +21,8 @@ void setup() {
     Wire.begin();
 
     Serial.println("Initializing System...");
+
+    webDash.initWiFi();
 
     // 1. Initialize Gyroscope Sensor
     if (!bikeSensor.initSensor()) {
