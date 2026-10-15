@@ -8,11 +8,11 @@
 // ==========================================
 // WIFI & FIREBASE CONFIGURATION
 // ==========================================
-#define WIFI_SSID "Oyaage_Hotspot_Name"       // ඔයාගේ ෆෝන් හෝ රවුටර් Wi-Fi නම දාන්න
-#define WIFI_PASSWORD "Oyaage_Hotspot_Password" // Wi-Fi පාස්වර්ඩ් එක දාන්න
+#define WIFI_SSID "Oyaage_Hotspot_Name"       // Put your phone or router Wi-Fi name here
+#define WIFI_PASSWORD "Oyaage_Hotspot_Password" // Put your Wi-Fi password here
 
-#define FIREBASE_HOST "https://yantra-accident-alert-system-default-rtdb.firebaseio.com/" // ඔයාගේ Database URL එක
-#define FIREBASE_AUTH "Oyaage_Database_Secret_Key"                                     // අර කලින් ගත්තු Secret Key එක
+#define FIREBASE_HOST "https://yantra-accident-alert-system-default-rtdb.firebaseio.com/" // Your Firebase Database URL
+#define FIREBASE_AUTH "Oyaage_Database_Secret_Key"                                     // Your Firebase Database Secret Key
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -64,7 +64,7 @@ void setup() {
     // 3. Initialize Handlebar Touch Sensors
     bikeHandle.initTouchSensors();
 
-    // System පටන් ගන්නකොට ඩේටාබේස් එකට SAFE කියලා දානවා
+    // Set initial status to SAFE in Firebase cloud on boot
     Firebase.setString(fbdo, "/accident_alert/status", "SAFE");
 
     Serial.println("System Ready! Monitoring for vibrations, touch & GPS data...");
