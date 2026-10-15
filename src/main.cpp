@@ -12,7 +12,7 @@
 #define WIFI_PASSWORD "bd7cAe60" // Put your Wi-Fi password here
 
 #define FIREBASE_HOST "https://yantra-accident-alert-system-default-rtdb.firebaseio.com/" // Your Firebase Database URL
-#define FIREBASE_AUTH "Oyaage_Database_Secret_Key"                                     // Your Firebase Database Secret Key
+#define FIREBASE_AUTH "46xj977bbRqYxvr2rr28127j5kXzvnfhHZBbodHX"                                     // Your Firebase Database Secret Key
 
 FirebaseData fbdo;
 FirebaseAuth auth;
