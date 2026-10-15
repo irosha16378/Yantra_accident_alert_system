@@ -8,8 +8,8 @@
 // ==========================================
 // WIFI & FIREBASE CONFIGURATION
 // ==========================================
-#define WIFI_SSID "Oyaage_Hotspot_Name"       // Put your phone or router Wi-Fi name here
-#define WIFI_PASSWORD "Oyaage_Hotspot_Password" // Put your Wi-Fi password here
+#define WIFI_SSID "Dialog 4G 815"       // Put your phone or router Wi-Fi name here
+#define WIFI_PASSWORD "bd7cAe60" // Put your Wi-Fi password here
 
 #define FIREBASE_HOST "https://yantra-accident-alert-system-default-rtdb.firebaseio.com/" // Your Firebase Database URL
 #define FIREBASE_AUTH "Oyaage_Database_Secret_Key"                                     // Your Firebase Database Secret Key
